@@ -74,8 +74,17 @@ public class State implements Serializable {
         this.type = type;
     }
 
-    public boolean equals(@NotNull State s){
-        return this.id == s.getId() && this.type == s.getType();
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        State state = (State) obj;
+        return this.id == state.id;  // 只比较 id，type 可以变化
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);  // 只基于 id
     }
 
     @Override
