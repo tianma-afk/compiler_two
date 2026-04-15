@@ -80,6 +80,7 @@ public class ParseRegex {
         stack.push(node);
 
         look = this.queue.poll();
+        boolean LeftParenthesisCheck = true;
         while (look != '%') {
             if (look == '*') {
                 RegexTreeNode knode;
@@ -97,17 +98,21 @@ public class ParseRegex {
                 stack.push(knode);
             }
             else if (look == '(') {
-                int Count = 1;
-                for (char tempc : this.queue) {
-                    if (tempc == '(') { // left parenthesis '('
-                        Count++;
-                    } else if (tempc == ')') { // right parenthesis ')'
-                        Count--;
+                if (LeftParenthesisCheck)
+                {
+                    int Count = 1;
+                    for (char tempc : this.queue) {
+                        if (tempc == '(') { // left parenthesis '('
+                            Count++;
+                        } else if (tempc == ')') { // right parenthesis ')'
+                            Count--;
+                        }
                     }
-                }
-                if (Count > 0) {
-                    System.out.println("not a legal regex!(')' is missing.)");
-                    return null;
+                    if (Count > 0) {
+                        System.out.println("not a legal regex!(')' is missing.)");
+                        return null;
+                    }
+                    LeftParenthesisCheck=false;
                 }
                 RegexTreeNode lnode = new RegexTreeNode('(', 4, null, null);
                 stack.push(lnode);
