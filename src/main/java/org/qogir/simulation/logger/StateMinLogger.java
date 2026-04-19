@@ -16,8 +16,8 @@ public class StateMinLogger {
     /**
      * Record the conversion process from DFA to minDFA
      *
-     * @param groupSet,ch
-     * @author zhengnf
+        * @param groupSet 状态分组
+        * @param ch 当前划分字符
      */
     public void getStateMinLogger(HashMap<Integer, HashMap<Integer, State>> groupSet, Character ch) {
         addStep(groupSet, ch + "");
@@ -36,8 +36,7 @@ public class StateMinLogger {
     /**
      * Record the Initial step from DFA to minDFA
      *
-     * @param groupSet,ch
-     * @author zhengnf
+        * @param groupSet 状态分组
      */
     public void setInitialStep(HashMap<Integer, HashMap<Integer, State>> groupSet) {
         //Initial
@@ -53,8 +52,7 @@ public class StateMinLogger {
     /**
      * Record the AcceptOrNot step from DFA to minDFA
      *
-     * @param groupSet,ch
-     * @author zhengnf
+        * @param groupSet 状态分组
      */
     public void setAcceptOrNotStep(HashMap<Integer, HashMap<Integer, State>> groupSet) {
         addStep(groupSet, "AcceptOrNot");

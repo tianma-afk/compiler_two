@@ -4,30 +4,32 @@ import org.qogir.compiler.FA.FiniteAutomaton;
 import org.qogir.compiler.FA.State;
 
 /**
- * A nondeterministic finite automaton (NFA) is a 5-tuple (S,∑,F,s0,sf). Here,
- *   S - a finite set of state. i.e The vertex set of transition graph of NFA
- *   ∑ - an Alphabet, not including ε
- *   F - S X ∑ U {ε} -> subset of S
- *   s0 - a start state
- *   sf - an accepting state.
- * Here, following McNaughton-Yamada-Thompson algorithm, NFA has the following properties:
- *   each NFA has only one accepting state;
- *   The accepting state has no outgoing transitions, and the start state has no incoming
- *   transitions.
- *   Each state other than the accepting state has either one outgoing transition on a symbol
- *   in alphabet or two outgoing transitions, both on ε(epsilon).
+ * Thompson NFA（TNFA）模型。
+ * <p>
+ * 继承自 {@link FiniteAutomaton}，并遵循 McNaughton-Yamada-Thompson 构造约束：
+ * 每个 TNFA 仅有一个接受状态，且该接受状态无出边。
  */
 
 public class TNFA extends FiniteAutomaton {
 
     private State acceptingState = new State();
 
+    /**
+     * 创建一个默认 TNFA。
+     * <p>
+     * 默认接受状态会被标记为 {@link State#ACCEPT} 并加入迁移图。
+     */
     public TNFA(){
         super();
         acceptingState.setType(State.ACCEPT);
         this.transitTable.addVertex(acceptingState);
     }
 
+    /**
+     * 使用指定接受状态创建 TNFA。
+     *
+     * @param acceptingState 接受状态
+     */
     public TNFA(State acceptingState){
         super();
         this.acceptingState = acceptingState;
@@ -35,10 +37,20 @@ public class TNFA extends FiniteAutomaton {
         this.transitTable.addVertex(this.acceptingState);
     }
 
+    /**
+     * 获取 TNFA 的接受状态。
+     *
+     * @return 接受状态
+     */
     public State getAcceptingState() {
         return acceptingState;
     }
 
+    /**
+     * 设置 TNFA 的接受状态。
+     *
+     * @param acceptingState 新的接受状态
+     */
     public void setAcceptingState(State acceptingState) {
         this.acceptingState = acceptingState;
     }

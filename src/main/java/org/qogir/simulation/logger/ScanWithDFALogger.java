@@ -21,8 +21,9 @@ public class ScanWithDFALogger {
     /**
      * Record the step when running DFAs
      *
-     * @param
-     * @author zhengnf
+        * @param nextState 当前 DFA 到状态的映射
+        * @param RDFARegexHashMap DFA 与正则表达式的映射
+        * @param pos 输入位置
      */
     public void getScanStepLogger(HashMap<RDFA, State> nextState, HashMap<RDFA, Regex> RDFARegexHashMap, int pos) {
         if (nextState.isEmpty()) return;
@@ -48,8 +49,9 @@ public class ScanWithDFALogger {
     /**
      * Record the start step when begin running DFAs
      *
-     * @param
-     * @author zhengnf
+        * @param currentState 当前 DFA 到状态的映射
+        * @param nextState 下一步 DFA 到状态的映射
+        * @param RDFARegexHashMap DFA 与正则表达式的映射
      */
     public void getScanStartStepLogger(HashMap<RDFA, State> currentState, HashMap<RDFA, State> nextState, HashMap<RDFA, Regex> RDFARegexHashMap) {
         if (!nextState.isEmpty()) return;

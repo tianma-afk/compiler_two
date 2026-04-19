@@ -1,0 +1,89 @@
+@startuml RE_to_NFA_Core
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide empty members
+
+package "org.qogir.simulation.scanner" {
+  class Scanner {
+    +constructRegexTree(r: Regex): RegexTree
+    +constructRegexNFA(r: Regex): TNFA
+  }
+}
+
+package "org.qogir.compiler.grammar.regularGrammar" {
+  class Regex {
+    -name: String
+    -regex: String
+    -priority: int
+    +getRegex(): String
+  }
+
+  class ParseRegex {
+    +ParseRegex(regex: Regex)
+    +parse(): RegexTree
+  }
+
+  class RegexTree {
+    +getRoot(): RegexTreeNode
+  }
+
+  class RegexTreeNode {
+    -value: Character
+    -type: int
+    +getType(): int
+    +getValue(): Character
+    +getFirstChild(): RegexTreeNode
+    +getLastChild(): RegexTreeNode
+  }
+
+  class ThompsonConstruction {
+    +translate(node: RegexTreeNode, root: RegexTreeNode): TNFA
+    -buildConcatNFA(nfas: ArrayList<TNFA>): TNFA
+    -buildUnionNFA(nfa1: TNFA, nfa2: TNFA): TNFA
+    -buildStarNFA(nfa: TNFA): TNFA
+  }
+
+  class TNFA {
+    -acceptingState: State
+    +getStartState(): State
+    +getAcceptingState(): State
+    +setAcceptingState(acceptingState: State)
+  }
+}
+
+package "org.qogir.compiler.FA" {
+  class FiniteAutomaton {
+    #startState: State
+    +getStartState(): State
+  }
+
+  class State {
+    +STATE_ID: int
+    +START: int
+    +MIDDLE: int
+    +ACCEPT: int
+  }
+}
+
+Scanner --> ParseRegex : create/use
+Scanner --> ThompsonConstruction : create/use
+Scanner --> Regex : input
+
+ParseRegex --> Regex : read regex string
+ParseRegex --> RegexTree : build
+RegexTree *-- RegexTreeNode : root/children
+
+ThompsonConstruction --> RegexTreeNode : recursive translation
+ThompsonConstruction --> TNFA : construct
+
+TNFA --|> FiniteAutomaton
+FiniteAutomaton --> State : startState
+TNFA --> State : acceptingState
+
+note right of ThompsonConstruction
+  Core RE -> NFA conversion logic:
+  leaf, concat, union, star
+end note
+
+@enduml

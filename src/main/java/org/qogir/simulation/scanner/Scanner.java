@@ -7,13 +7,14 @@ import org.qogir.compiler.util.graph.LabelEdge;
 import java.util.HashMap;
 
 /**
- * An implementation of a regular grammar for:
- * 1)
+ * 正则文法扫描器与自动机构造入口。
+ * <p>
+ * 提供从正则表达式到语法树、NFA、DFA 及最小化 DFA 的构造流程。
  */
 public class Scanner {
 
     /**
-     * A regular grammar {@see }
+     * 正则文法定义。
      */
     private final RegularGrammar rg;
 
@@ -62,9 +63,10 @@ public class Scanner {
     }
 
     /**
-     * Build a regex tree by ParseRegex{@link ParseRegex#parse}
-     * @param r a regex
-     * @return a regex tree {@link RegexTree}
+     * 基于 {@link ParseRegex#parse()} 将单个正则表达式构建为语法树。
+     *
+     * @param r 正则表达式
+     * @return 对应语法树 {@link RegexTree}
      */
     public RegexTree constructRegexTree(Regex r){
         ParseRegex parser = new ParseRegex(r);
@@ -76,9 +78,11 @@ public class Scanner {
 
 
     /**
-     * Build regex trees for a Regular grammar with more regexes.
-     * The method calls {@see constructRegexTree} and can be used for a Regular grammar with only one regex.
-     * @return a collection of regex trees each for one regex in the regular grammar.
+     * 为当前文法中的所有正则表达式构建语法树。
+     * <p>
+     * 内部调用 {@link #constructRegexTree(Regex)}，也可用于仅包含一个正则的文法。
+     *
+     * @return 文法中每个正则对应的语法树映射
      */
 
     public HashMap<Regex,RegexTree> constructRegexTrees(){
@@ -91,10 +95,13 @@ public class Scanner {
     }
 
     /**
-     * This private method is used to construct an NFA for a regex.
-     * The construction is based on McNaughton-Yamada-Thompson algorithm {@link ThompsonConstruction#translate}.
-     * @param r a regex
-     * @return An NFA
+     * 为单个正则表达式构建 TNFA。
+     * <p>
+     * 构建过程基于 McNaughton-Yamada-Thompson 算法
+     * {@link ThompsonConstruction#translate(RegexTreeNode, RegexTreeNode)}。
+     *
+     * @param r 正则表达式
+     * @return 对应 TNFA
      */
     public TNFA constructRegexNFA(Regex r) {
         RegexTree tree = constructRegexTree(r);
@@ -106,6 +113,12 @@ public class Scanner {
         return nfa;
     }
 
+    /**
+     * 根据正则表达式内容提取并设置 NFA 字母表（不包含 ε）。
+     *
+     * @param r 正则表达式
+     * @param nfa 目标 NFA
+     */
     public void setAlphabetForNfa(Regex r, TNFA nfa) {
         //add logger queue
         //ThompsonLogger.resetParam();

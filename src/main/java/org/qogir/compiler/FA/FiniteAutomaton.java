@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * @author xuyang
+ * 有限自动机基础类。
  */
 
 public class FiniteAutomaton implements Serializable {

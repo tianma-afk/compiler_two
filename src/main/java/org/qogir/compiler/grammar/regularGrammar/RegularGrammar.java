@@ -5,21 +5,23 @@ import org.qogir.compiler.util.StringUtil;
 import java.util.ArrayList;
 
 /**
- * Regular Grammar
- * The supported symbols: [A-Za-z] and ε;
- * The supported grammars: a|b, ab, a*, (a)
- *
- * When instantiate a RegularGrammar object, only the inputs with " string := regular expression " form
- * are accepted. For example:
- * + regex1 := c(a|b)*
- * + regex2 := d(f|ea*(g|h))b
- * + regex3 := a|ε
- * The string on the left hand of ":="  is the name of regex, i.e. tag(type) of token in lexical analysis.
- * The string on the right hand of ":=" is regular expression.
+ * 正则文法定义。
+ * <p>
+ * 支持字符集：字母、数字以及 {@code ε}；
+ * 支持运算：并集 {@code |}、连接、闭包 {@code *} 与括号分组。
+ * <p>
+ * 输入需采用 {@code 名称 := 正则表达式} 形式，例如：
+ * {@code id := c(a|b)*}。
  */
 public class RegularGrammar {
     public ArrayList<Character> symbols = new ArrayList<Character>();//the alphabet for regular grammar
     private final ArrayList<Regex> patterns = new ArrayList<>();
+
+    /**
+     * 基于字符串数组构造正则文法。
+     *
+     * @param regexes 形如 {@code 名称 := 表达式} 的规则数组
+     */
     public RegularGrammar(String[] regexes){
         for(String r: regexes){
             String name = r.substring(0, r.lastIndexOf(":=") - 1);
@@ -40,9 +42,20 @@ public class RegularGrammar {
         }
     }
 
+    /**
+     * 获取文法字母表（不包含 {@code ε}）。
+     *
+     * @return 字母表字符列表
+     */
     public ArrayList<Character> getSymbols(){
         return this.symbols;
     }
+
+    /**
+     * 获取文法中的全部正则模式。
+     *
+     * @return 正则模式列表
+     */
     public ArrayList<Regex> getPatterns() {
         return patterns;
     }
