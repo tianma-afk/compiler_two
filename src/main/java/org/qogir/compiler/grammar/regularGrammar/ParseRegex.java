@@ -221,6 +221,10 @@ public class ParseRegex {
                 RegexTreeNode bnode = new RegexTreeNode(look, 0, null, null);
                 stack.push(bnode);
             }
+            else {
+                System.out.println("not a legal regex("+look+"is an unknown character)");
+                return null;
+            }
 
             look = this.queue.poll();
         }
