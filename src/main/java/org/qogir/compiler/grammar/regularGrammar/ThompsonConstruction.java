@@ -1,14 +1,27 @@
 package org.qogir.compiler.grammar.regularGrammar;
 
 import org.qogir.compiler.FA.State;
-import org.qogir.compiler.util.graph.LabelEdge;
-import org.qogir.compiler.util.tree.DefaultTreeNode;
 
 import java.util.ArrayList;
 
+/**
+ * 基于 McNaughton-Yamada-Thompson 算法将正则表达式语法树转换为 TNFA。
+ * <p>
+ * 本类的核心入口为 {@link #translate(RegexTreeNode, RegexTreeNode)}，
+ * 根据节点类型递归构建基础、连接、并集和闭包四类 NFA 结构。
+ */
 public class ThompsonConstruction {
     private static final Character EPSILON = 'ε';
 
+    /**
+     * 将语法树中的某个节点递归翻译为 TNFA。
+     * <p>
+     * 当 {@code node == root} 时会重置状态编号，以保证同一次构造过程中的状态编号连续。
+     *
+     * @param node 当前待翻译的语法树节点
+     * @param root 语法树根节点
+     * @return 当前节点对应的 TNFA；当输入节点为空或类型不支持时返回 {@code null}
+     */
     public TNFA translate(RegexTreeNode node, RegexTreeNode root) {
         if (node == null) return null;
 
@@ -59,8 +72,12 @@ public class ThompsonConstruction {
     }
 
     /**
-     * 2. 构建连接 NFA (Concatenation)
-     * 结构: [NFA1] --ε--> [NFA2]
+     * 构建连接（Concatenation）NFA。
+     * <p>
+     * 连接规则为将前一段 NFA 的接受状态通过 ε 边连接到后一段 NFA 的开始状态。
+     *
+     * @param nfas 需要按顺序连接的 NFA 列表
+     * @return 连接后的 NFA；当输入列表为空时返回 {@code null}
      */
     private TNFA buildConcatNFA(ArrayList<TNFA> nfas) {
         if(nfas.isEmpty()){
@@ -93,7 +110,11 @@ public class ThompsonConstruction {
     }
 
     /**
-     * 3. 构建选择 NFA (Union / Or)
+     * 构建并集（Union / Or）NFA。
+     *
+     * @param nfa1 左分支 NFA
+     * @param nfa2 右分支 NFA
+     * @return 并集后的 NFA
      */
     private TNFA buildUnionNFA(TNFA nfa1, TNFA nfa2) {
         TNFA result = new TNFA();
@@ -120,7 +141,10 @@ public class ThompsonConstruction {
     }
 
     /**
-     * 4. 构建闭包 NFA (Kleene Star)
+     * 构建 Kleene 闭包（Star）NFA。
+     *
+     * @param nfa 需要进行闭包运算的子 NFA
+     * @return 闭包后的 NFA
      */
     private TNFA buildStarNFA(TNFA nfa) {
         TNFA result = new TNFA();

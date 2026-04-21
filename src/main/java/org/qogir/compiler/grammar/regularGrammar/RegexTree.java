@@ -4,8 +4,16 @@ import org.qogir.compiler.util.tree.DefaultTree;
 
 import java.util.ArrayDeque;
 
+/**
+ * 正则表达式语法树。
+ * <p>
+ * 该类基于 {@link DefaultTree}，节点类型为 {@link RegexTreeNode}。
+ */
 public class RegexTree extends DefaultTree<RegexTreeNode> {
 
+    /**
+     * 创建一个空语法树。
+     */
     public RegexTree(){
         super();
     }
@@ -43,6 +51,13 @@ public class RegexTree extends DefaultTree<RegexTreeNode> {
         return str.toString();
     }
 
+    /**
+     * 导出语法树数据。
+     * <p>
+     * 当前尚未实现具体导出逻辑。
+     *
+     * @return 语法树导出结果字符串
+     */
     public String export(){
         String treeJson="";
         return treeJson;

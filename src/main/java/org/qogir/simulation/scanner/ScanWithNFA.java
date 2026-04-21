@@ -18,8 +18,6 @@ import java.util.HashMap;
  * When all automata get stuck, report the last match and restart the search at that point.
  * When more than one regular expressions apply, choose the one with the greater “priority.”
  * If exist two regular expressions with same priority can accept the same input string(substring), error.
- *
- * @author xuyang
  *//*
 
 public class ScanWithNFA extends Scan{

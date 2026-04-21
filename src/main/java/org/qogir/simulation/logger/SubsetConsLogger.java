@@ -16,7 +16,6 @@ public class SubsetConsLogger {
      * Record the conversion process from nfa to dfa:subSetConstruct
      *
      * @param dfa
-     * @author zhengnf
      */
     public static void getSubsetConsLogger(RDFA dfa, Character ch, State SourceDfaState, HashMap<Integer, State> TargetNfaStateSet) {
         addStep(dfa, ch, SourceDfaState, TargetNfaStateSet);

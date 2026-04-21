@@ -19,7 +19,6 @@ public class SubsetConstruction {
      * @param s a single state of NFA
      * @param tb the transition table of NFA
      * @return a set of state reachable from the state s on ε-transition
-     * @author xuyang
      */
     private HashMap<Integer, State> epsilonClosures(State s, LabeledDirectedGraph<State> tb){
         if (!tb.vertexSet().contains(s)) { //if vertex s not in the transition table
@@ -51,7 +50,6 @@ public class SubsetConstruction {
      * @param ss a state set of NFA
      * @param tb the transition table of NFA
      * @return a set of state reachable from the state set on ε-transition
-     * @author xuyang
      */
 
     public HashMap<Integer, State> epsilonClosure(HashMap<Integer, State> ss, LabeledDirectedGraph<State> tb){

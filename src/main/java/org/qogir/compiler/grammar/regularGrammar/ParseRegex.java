@@ -4,20 +4,18 @@ import java.util.ArrayDeque;
 import java.util.Stack;
 
 /**
- * An implementation of converting a regex to a regex tree.
- *
- * @author xuyang
+ * 将正则表达式解析为语法树（{@link RegexTree}）的实现。
  */
 
 public class ParseRegex {
     private final ArrayDeque<Character> queue = new ArrayDeque<>();
 
     /**
-     * Construct a ParseRegex object with a regex.
-     * The input string of regex is divided into a sequence of char
-     * For convenience, the char '%' indicating the end of the input is appended to the sequence
+     * 使用给定正则表达式构造解析器。
+     * <p>
+     * 输入串会被拆分为字符序列，并在末尾附加 `%` 作为结束标记。
      *
-     * @param regex a regular expression
+     * @param regex 正则表达式对象
      */
     public ParseRegex(Regex regex) {
         char[] ch = regex.getRegex().toCharArray();
@@ -31,18 +29,12 @@ public class ParseRegex {
     }
 
     /**
-     * Converting the regex into a regex tree
-     * 1) Set a stack to hold the nodes of regex tree
-     * 2) The variable "look" hold the next input char
-     * 3) According to the type of look, a new node is
-     * created when the type of the "look" is basic case (type = letter or ε),
-     * or a new node is created by popping several nodes in the stack, merging
-     * them as a concatenation node, taking the conca node as its child when
-     * the type of the "look" is operator (type = * ,(, ) or |)，
-     * Then the new node is pushed into the stack.
+     * 将当前正则表达式解析为语法树。
+     * <p>
+     * 解析过程中使用栈维护中间节点，并依据字符类型处理：
+     * 基本字符、连接、并集、括号与闭包等运算符。
      *
-     * @return a regex tree
-     * @author xuyang
+     * @return 解析后的语法树；当表达式非法时返回 {@code null}
      */
     public RegexTree parse() {
 
@@ -292,9 +284,11 @@ public class ParseRegex {
     }
 
     /**
-     * Make nodes in a stack as children of one node.
+     * 将栈中的多个节点按顺序合并为同一父节点的子节点链。
      *
-     * @param stack holds the nodes that will be merged.
+     * @param pt 目标父节点
+     * @param stack 待合并的节点栈
+     * @return 合并完成后的父节点
      */
     public RegexTreeNode mergeStackAsOneChild(RegexTreeNode pt, Stack<RegexTreeNode> stack) {
         RegexTreeNode temp1 = stack.pop();
