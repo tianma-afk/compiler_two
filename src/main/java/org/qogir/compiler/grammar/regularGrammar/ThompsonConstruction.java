@@ -14,7 +14,7 @@ public class ThompsonConstruction {
 
         // 先重置，再创建任何 TNFA
         if (node == root) {
-            State.STATE_ID = 4;
+            State.STATE_ID = 0;//重置DFA状态编号
         }
 
         switch (node.getType()) {

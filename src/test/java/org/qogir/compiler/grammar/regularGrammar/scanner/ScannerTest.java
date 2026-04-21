@@ -30,13 +30,16 @@ public class ScannerTest {
         System.out.println(tnfa);
         System.out.println("Show the DFA:");
         //test constructing the DFA
-        System.out.println(scanner.constructDFA(tnfa).toString());
+        RDFA dfa = scanner.constructDFA(tnfa);
+        System.out.println(dfa.StateMappingBetweenDFAAndNFAToString());
+        System.out.println(dfa.toString());
+
     }
 
     public static void main(String[] args) {
 
 
-        String[] regexes = new String[]{"regex0 := c(a|b)*"};//"regex1 := c(a|b)*","regex2 := d(f|ea*(g|h))b","c(a|b)*","a|b", "ab*", "d(f|e)","d(f|ea*(g|h))b","c(a|b)*"
+        String[] regexes = new String[]{"regex0 := c(a|b*"};//"regex1 := c(a|b)*","regex2 := d(f|ea*(g|h))b","c(a|b)*","a|b", "ab*", "d(f|e)","d(f|ea*(g|h))b","c(a|b)*"
 
         //test defining a regular grammar
         RegularGrammar rg = new RegularGrammar(regexes);

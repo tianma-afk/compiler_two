@@ -18,7 +18,7 @@ public class State implements Serializable {
     /**
      * Every state has a unique id which can not be modified.
      */
-    private final int id;//state id
+    private final int id;//状态名
 
     /**
      * Every state has a sid which can be assigned with new value and is used for display purpose.
@@ -33,7 +33,7 @@ public class State implements Serializable {
     public static final int MIDDLE = 1;
     public static final int ACCEPT = 2;
     public static final int ACCEPTANDSTART = 20;
-    private int type = MIDDLE;
+    private int type = MIDDLE;//状态类型 0-start; 1-middle; 2-accept
 
     public State(){
         this.id = State.STATE_ID;

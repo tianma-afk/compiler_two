@@ -34,16 +34,21 @@ public class RDFA extends FiniteAutomaton {
     }
 
     public String StateMappingBetweenDFAAndNFAToString() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
         for(State s : this.getStateMappingBetweenDFAAndNFA().keySet()){
-            String mapping = "";
+            StringBuilder mapping = new StringBuilder();
             for(State ns : this.getStateMappingBetweenDFAAndNFA().get(s).values()){
-                mapping += ns.toString() + ",";
+                mapping.append(ns.toString()).append(",");
             }
-            mapping = mapping.substring(0,str.length()-1);
-            mapping = "DFA State:" + s.toString() + "\tNFA State set:\t{"+ mapping + "}" + "\r";
-            str += mapping;
+            if (!mapping.isEmpty()) {
+                mapping.setLength(mapping.length() - 1);
+            }
+
+            // 拼接行
+            str.append("DFA State:").append(s.toString())
+                    .append("\tNFA State set:\t{").append(mapping)
+                    .append("}").append("\r\n");
         }
-        return str;
+        return str.toString();
     }
 }

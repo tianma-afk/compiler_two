@@ -8,9 +8,9 @@ public class LabelEdge implements Serializable {
     @Serial
     private static final long serialVersionUID = 7048748617452671098L;
 
-    private Object source;
-    private Object target;
-    private Character label;
+    private Object source;//起点
+    private Object target;//终点
+    private Character label;//边上的标签
 
     public LabelEdge(Object source, Object target, Character label) {
         this.source = source;
