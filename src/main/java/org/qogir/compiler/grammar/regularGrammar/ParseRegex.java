@@ -65,13 +65,12 @@ public class ParseRegex {
         }
 
         int t;
-        if (Character.isDigit(look) || Character.isLetter(look) || look == 'ε')
+        if (Character.isDigit(look) || Character.isLetter(look) || look == 'ε') {
             t = 0;
-        else t = 4;
-        RegexTreeNode node = new RegexTreeNode(look, t, null, null);
-        stack.push(node);
-
-        look = this.queue.poll();
+            RegexTreeNode node = new RegexTreeNode(look, t, null, null);
+            stack.push(node);
+            look = this.queue.poll();
+        }
         boolean LeftParenthesisCheck = true;
         while (look != '%') {
             if (look == '*') {

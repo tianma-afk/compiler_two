@@ -1,0 +1,15 @@
+{
+  "regexes": [
+    "regex0 := c(a|b)*",
+    "regex1 := d(f|ea*(g|h))b",
+    "regex2 := a|b",
+    "regex3 := a|b|c"
+  ],
+  "invalidRegexes": [
+    "badRegex0 := a(|b)",
+    "badRegex1 := (ab",
+    "badRegex2 := *ab",
+    "badRegex3 := a||b",
+    "badRegex4 := a+b"
+  ]
+}
