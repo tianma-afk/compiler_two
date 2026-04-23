@@ -20,7 +20,7 @@ public class SubsetConstruction {
      * @param tb the transition table of NFA
      * @return a set of state reachable from the state s on ε-transition
      */
-    private HashMap<Integer, State> epsilonClosures(State s, LabeledDirectedGraph<State> tb){
+    private HashMap<Integer, State> epsilonClosures(State s, LabeledDirectedGraph<State> tb){//获取ε闭包 键值对：interger为状态编号 对应 状态对象
         if (!tb.vertexSet().contains(s)) { //if vertex s not in the transition table
             return null;
         }
