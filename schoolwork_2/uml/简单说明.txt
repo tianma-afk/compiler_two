@@ -1,0 +1,16 @@
+本目录新增了 NFA 转 DFA 的核心类图文件：
+
+1. nfa_to_dfa_core.puml
+	- 描述了子集构造算法的核心类与关系。
+	- 核心算法类：SubsetConstruction。
+	- 输入模型：TNFA。
+	- 输出模型：RDFA。
+	- 继承关系：TNFA、RDFA 继承 FiniteAutomaton。
+	- 数据结构依赖：State、LabeledDirectedGraph、LabelEdge。
+	- 入口编排关系：Scanner 通过 SubsetConstruction 完成 NFA 到 DFA 转换。
+
+2. 图中重点
+	- 展示了 subSetConstruct 以及 epsilonClosure、move、epsilonClosureWithMove 等关键方法。
+	- 展示了 RDFA 中 DFA 状态到 NFA 状态集合的映射结构。
+
+该类图用于表达 NFA 转 DFA 的结构设计与核心依赖关系，便于课程文档和实现讲解使用。

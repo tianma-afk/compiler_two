@@ -1,0 +1,121 @@
+@startuml NFA_to_DFA_Core
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide empty members
+
+package "org.qogir.simulation.scanner" {
+  class Scanner {
+    +constructDFA(nfa: TNFA): RDFA
+    +constructRegexDFA(r: Regex): RDFA
+    +constructDFA(): RDFA
+  }
+}
+
+package "org.qogir.compiler.grammar.regularGrammar" {
+  class SubsetConstruction {
+    +epsilonClosure(ss: HashMap<Integer, State>, tb: LabeledDirectedGraph<State>): HashMap<Integer, State>
+    +move(ss: HashMap<Integer, State>, ch: Character, tb: LabeledDirectedGraph<State>): HashMap<Integer, State>
+    +epsilonClosureWithMove(sSet: HashMap<Integer, State>, ch: Character, tb: LabeledDirectedGraph<State>): HashMap<Integer, State>
+    +subSetConstruct(tnfa: TNFA): RDFA
+    -epsilonClosures(s: State, tb: LabeledDirectedGraph<State>): HashMap<Integer, State>
+    -moves(s: State, ch: Character, tb: LabeledDirectedGraph<State>): HashMap<Integer, State>
+    -getAlphabet(graph: LabeledDirectedGraph<State>): Set<Character>
+  }
+
+  class TNFA {
+    -acceptingState: State
+    +getStartState(): State
+    +getAcceptingState(): State
+    +setAcceptingState(acceptingState: State)
+    +getTransitTable(): LabeledDirectedGraph<State>
+  }
+
+  class RDFA {
+    -StateMappingBetweenDFAAndNFA: HashMap<State, HashMap<Integer, State>>
+    +setStateMappingBetweenDFAAndNFA(s: State, nfaStates: HashMap<Integer, State>)
+    +getStateMappingBetweenDFAAndNFA(): HashMap<State, HashMap<Integer, State>>
+    +StateMappingBetweenDFAAndNFAToString(): String
+  }
+
+  class Regex
+}
+
+package "org.qogir.compiler.FA" {
+  class FiniteAutomaton {
+    #alphabet: ArrayList<Character>
+    #transitTable: LabeledDirectedGraph<State>
+    #startState: State
+    +setAlphabet(alphabet: ArrayList<Character>)
+    +getAlphabet(): ArrayList<Character>
+    +getStartState(): State
+    +setStartState(startState: State)
+    +getTransitTable(): LabeledDirectedGraph<State>
+    +renumberSID(): void
+  }
+
+  class State {
+    +STATE_ID: int
+    +START: int
+    +MIDDLE: int
+    +ACCEPT: int
+    +ACCEPTANDSTART: int
+    -id: int
+    -sid: String
+    -type: int
+    +getId(): int
+    +getSid(): String
+    +setSid(sid: String): void
+    +getType(): int
+    +setType(type: int): void
+  }
+}
+
+package "org.qogir.compiler.util.graph" {
+  class LabeledDirectedGraph<V> {
+    -vertexSet: Set<V>
+    -edgeSet: Set<LabelEdge>
+    +vertexSet(): Set<V>
+    +edgeSet(): Set<LabelEdge>
+    +addVertex(v: V): boolean
+    +addEdge(source: V, target: V, label: Character): boolean
+    +merge(graph: LabeledDirectedGraph): boolean
+  }
+
+  class LabelEdge {
+    -source: Object
+    -target: Object
+    -label: Character
+    +getSource(): Object
+    +getTarget(): Object
+    +getLabel(): Character
+  }
+}
+
+Scanner --> SubsetConstruction : create/use
+Scanner --> TNFA : input
+Scanner --> RDFA : output
+
+SubsetConstruction --> TNFA : read NFA
+SubsetConstruction --> RDFA : build DFA
+SubsetConstruction --> State : closure/move state set
+SubsetConstruction --> LabeledDirectedGraph : traverse transitions
+
+TNFA --|> FiniteAutomaton
+RDFA --|> FiniteAutomaton
+FiniteAutomaton --> State : startState
+FiniteAutomaton --> LabeledDirectedGraph : transitTable
+LabeledDirectedGraph --> LabelEdge : contains
+
+RDFA --> State : DFA/NFA state mapping
+Scanner --> Regex : constructRegexDFA input
+
+note right of SubsetConstruction
+  Core NFA -> DFA algorithm:
+  1) epsilon-closure(start)
+  2) move + epsilon-closure
+  3) create new DFA states and transitions
+  4) mark accepting states
+end note
+
+@enduml

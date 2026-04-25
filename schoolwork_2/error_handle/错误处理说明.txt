@@ -1,0 +1,64 @@
+程序中重要的错误处理说明（重点：输入错误处理）
+
+本文基于 src 目录当前实现整理，描述系统在输入非法、格式错误或无法匹配时的处理行为。
+
+一、总体错误处理风格
+1. 以返回值而不是抛异常为主：语法构造阶段常用 return null，扫描阶段使用 ScanMessage 状态码。
+2. 局部使用控制台输出提示：ParseRegex.parse() 在发现非法正则时打印提示后返回 null。
+3. 部分入口缺少显式校验，可能在非法输入下触发运行时异常（如 NPE、字符串下标异常）。
+
+二、正则表达式输入错误处理（核心）
+位置：src/main/java/org/qogir/compiler/grammar/regularGrammar/ParseRegex.java
+
+ParseRegex.parse() 对非法正则做了较完整的分支检查：
+1. 首字符非法：首字符必须是字母、数字或 '('，否则打印错误并返回 null。
+2. 空正则：look == '%' 时打印 "a NULL regex!" 并返回 null。
+3. 闭包 '*' 使用位置错误：'*' 前不是基本字符或 ')'，打印错误并返回 null。
+4. 括号不匹配：缺少 ')' 或 '('，打印错误并返回 null。
+5. 并集符号 '|' 用法错误：如 '(|'、'||'、'|)' 等，打印错误并返回 null。
+6. 未知字符：出现不支持字符，打印未知字符提示并返回 null。
+
+结论：ParseRegex 层可识别大多数正则输入错误，反馈方式是打印 + null。
+
+三、文法规则输入错误处理
+位置：src/main/java/org/qogir/compiler/grammar/regularGrammar/RegularGrammar.java
+
+RegularGrammar(String[] regexes) 假设每条规则都满足 "name := regex" 格式，通过 lastIndexOf(":=") 截取。若输入不含 ":=" 或格式不完整，没有显式校验，可能触发 StringIndexOutOfBoundsException。
+
+结论：该层对规则格式错误没有防护，属于潜在运行时异常点。
+
+四、构造流程中的 null 传播与风险
+位置：src/main/java/org/qogir/simulation/scanner/Scanner.java
+
+1. constructRegexTrees()：若 rg == null，直接返回 null。
+2. constructNFA()：当 rg.getPatterns().size() == 0 时返回 null。
+3. constructRegexNFA(Regex r)：内部调用 parse() 后直接取 tree.getRoot()，无判空保护，parse() 返回 null 时可能触发 NPE。
+4. constructDFA()/constructRegexDFA()：依赖上游 NFA 成功构建，未统一拦截 null。
+
+结论：Scanner 层部分接口可返回 null，但并非全链路安全判空，调用方应做二次校验。
+
+五、扫描阶段输入错误处理
+位置：src/main/java/org/qogir/simulation/scanner/ScanWithDFA.java
+
+通过状态码反馈错误：
+1. SUCCESS_MATCH (0)：匹配成功。
+2. NOT_MATCH (1)：输入无法被规则匹配。
+3. AMBIGUITY_GRAMMAR (2)：多个规则同优先级同时命中，文法歧义。
+
+触发逻辑：
+1. 若所有 DFA 在某位置都无法继续，且没有最近接受态，返回 NOT_MATCH。
+2. 恢复输出 token 时发现同优先级冲突，返回 AMBIGUITY_GRAMMAR。
+3. 扫描结束时若最后接受位置不是输入末尾，返回 NOT_MATCH。
+
+补充：代码中存在非法字符先验校验注释块，但未启用，目前依赖自动机运行结果判错。
+
+六、底层数据结构的防御性处理
+1. LabeledDirectedGraph：addVertex/addEdge/merge 对 null 返回 false。
+2. StringUtil.trim：入参为 null 时返回 null。
+3. BreadthFirstIterator：startVertex 为 null 时直接结束遍历，next() 无元素时返回 null。
+4. ThompsonConstruction / SubsetConstruction：部分非法输入返回 null。
+
+七、对输入错误处理的总结
+1. 已明确处理：正则语法非法、扫描不匹配与歧义。
+2. 处理较弱/需调用方兜底：文法字符串格式错误、parse() 失败后的链路判空。
+3. 统一结论：当前项目是 null/状态码驱动的错误处理设计，对调用方的判空与状态码判断有较强依赖。
